@@ -892,7 +892,7 @@ class WC_Retailcrm_Client_V5
                 'Parameter `code` must be not empty'
             );
         }
-            
+
         if (empty($entity) || !in_array($entity, array('customer', 'order', 'customer_corporate', 'company'))) {
             throw new \InvalidArgumentException(
                 sprintf(
@@ -1008,6 +1008,169 @@ class WC_Retailcrm_Client_V5
             WC_Retailcrm_Request::METHOD_GET
         );
     }
+
+    /**
+     * Create a loyalty
+     *
+     * @param array $loyaltyAccount loyaltyAccount data
+     * @param string $site (default: null)
+     *
+     * @return WC_Retailcrm_Response
+     */
+    public function loyaltyCreate(array $loyaltyAccount, $site = null)
+    {
+        if (!count($loyaltyAccount)) {
+            throw new InvalidArgumentException(
+                'Parameter `loyaltyAccount` must contains a data'
+            );
+        }
+
+        return $this->client->makeRequest(
+            '/loyalty/account/create',
+            WC_Retailcrm_Request::METHOD_POST,
+            $this->fillSite($site, array('loyaltyAccount' => json_encode($loyaltyAccount)))
+        );
+    }
+
+    /**
+     * Activate a loyalty
+     *
+     * @param string $id loyalty identificator
+     *
+     * @return WC_Retailcrm_Response
+     */
+    public function loyaltyActivate($id)
+    {
+        return $this->client->makeRequest(
+            "/loyalty/account/$id/activate",
+            WC_Retailcrm_Request::METHOD_POST,
+            array('id' => $id)
+        );
+    }
+
+
+    /**
+     * Edit a loyalty
+     *
+     * @param array $loyaltyAccount loyaltyAccount data
+     * @param $id loyalty identificator
+     *
+     * @return WC_Retailcrm_Response
+     */
+    public function loyaltyEdit($loyaltyAccount, $id)
+    {
+        if (!count($loyaltyAccount)) {
+            throw new InvalidArgumentException(
+                'Parameter `loyaltyAccount` must contains a data'
+            );
+        }
+
+        return $this->client->makeRequest(
+            "/loyalty/account/$id/edit",
+            WC_Retailcrm_Request::METHOD_POST,
+            array('loyaltyAccount' => json_encode($loyaltyAccount), 'id' => $id)
+        );
+    }
+
+
+    /**
+     * Returns filtered loyalty accounts list
+     *
+     * @param array $filter (default: array())
+     * @param int   $page   (default: null)
+     * @param int   $limit  (default: null)
+     *
+     * @throws InvalidArgumentException
+     * @throws WC_Retailcrm_Exception_Curl
+     * @throws WC_Retailcrm_Exception_Json
+     *
+     * @return WC_Retailcrm_Response
+     */
+    public function loyaltyAccountsList(array $filter = array(), $page = null, $limit = null)
+    {
+        $parameters = array();
+
+        if (count($filter)) {
+            $parameters['filter'] = $filter;
+        }
+        if (null !== $page) {
+            $parameters['page'] = (int) $page;
+        }
+        if (null !== $limit) {
+            $parameters['limit'] = (int) $limit;
+        }
+
+        return $this->client->makeRequest(
+            '/loyalty/accounts',
+            WC_Retailcrm_Request::METHOD_GET,
+            $parameters
+        );
+    }
+
+    /**
+     * Calculate a loyalty
+     *
+     * @param array $order order data
+     * @param float $bonuses bonuses client
+     * @param string $site (default: null)
+     *
+     * @return WC_Retailcrm_Response
+     */
+    public function loyaltyCalculate(array $order, $bonuses, $site = null)
+    {
+        if (!count($order)) {
+            throw new InvalidArgumentException(
+                'Parameter `loyaltyAccount` must contains a data'
+            );
+        }
+
+        if (empty($bonuses)) {
+            throw new InvalidArgumentException(
+                'Parameter `bonuses` must contains a data'
+            );
+        }
+
+        return $this->client->makeRequest(
+            '/loyalty/calculate',
+            WC_Retailcrm_Request::METHOD_POST,
+            $this->fillSite($site, array('order' => json_encode($order), 'bonuses' => $bonuses))
+        );
+    }
+
+    /**
+     * Returns filtered program loyalties list
+     *
+     * @param array $filter (default: array())
+     * @param int   $page   (default: null)
+     * @param int   $limit  (default: null)
+     *
+     * @throws InvalidArgumentException
+     * @throws WC_Retailcrm_Exception_Curl
+     * @throws WC_Retailcrm_Exception_Json
+     *
+     * @return WC_Retailcrm_Response
+     */
+    public function programLoyaltiesList(array $filter = array(), $page = null, $limit = null)
+    {
+        $parameters = array();
+
+        if (count($filter)) {
+            $parameters['filter'] = $filter;
+        }
+        if (null !== $page) {
+            $parameters['page'] = (int) $page;
+        }
+        if (null !== $limit) {
+            $parameters['limit'] = (int) $limit;
+        }
+
+        return $this->client->makeRequest(
+            '/loyalty/loyalties',
+            WC_Retailcrm_Request::METHOD_GET,
+            $parameters
+        );
+    }
+
 
     /**
      * Returns filtered orders list
@@ -1281,6 +1444,39 @@ class WC_Retailcrm_Client_V5
             )
         );
     }
+
+
+    /**
+     * Apply a loyalty bonus
+     *
+     * @param array $order order data
+     * @param float $bonuses bonuses client
+     * @param string $site (default: null)
+     *
+     * @return WC_Retailcrm_Response
+     */
+    public function loyaltyApply(array $order, $bonuses, $site = null)
+    {
+        if (!count($order)) {
+            throw new InvalidArgumentException(
+                'Parameter `order` must contains a data'
+            );
+        }
+
+        if (empty($bonuses)) {
+            throw new InvalidArgumentException(
+                'Parameter `bonuses` must contains a data'
+            );
+        }
+
+        return $this->client->makeRequest(
+            '/orders/loyalty/apply',
+            WC_Retailcrm_Request::METHOD_POST,
+            $this->fillSite($site, array('order' => json_encode($order), 'bonuses' => $bonuses))
+        );
+    }
+
+
 
     /**
      * Create an order payment
