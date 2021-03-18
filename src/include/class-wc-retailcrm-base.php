@@ -96,6 +96,11 @@ if (!class_exists('WC_Retailcrm_Base')) {
             add_action('wp_print_footer_scripts', array($this, 'send_analytics'), 99);
             add_action('woocommerce_new_order', array($this, 'create_order'), 11, 1);
 
+
+            add_filter( 'woocommerce_account_menu_items', array($this, 'add_loyalty_item'));
+            add_action( 'init', array($this, 'add_loyalty_endpoint'));
+            add_action( 'woocommerce_account_loyalty_endpoint',  array($this, 'show_loyalty'));
+
             if (!$this->get_option('deactivate_update_order')
                 || $this->get_option('deactivate_update_order') == static::NO
             ) {
@@ -445,6 +450,21 @@ if (!class_exists('WC_Retailcrm_Base')) {
                     update_option('retailcrm_client_id', $client_id);
                 }
             }
+        }
+
+        public function add_loyalty_item( $items ) {
+
+            $items['loyalty'] = __( 'Program loyalty' );
+
+            return $items;
+        }
+
+        public function add_loyalty_endpoint() {
+            add_rewrite_endpoint( 'loyalty', EP_PAGES );
+        }
+
+        public function show_loyalty() {
+            echo 'Hello world';
         }
     }
 }
