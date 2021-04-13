@@ -252,3 +252,12 @@ msgstr "Поддержка корпоративных клиентов"
 
 msgid "Enabled"
 msgstr "Включено"
+
+msgid "Program loyalty"
+msgstr "Программа лояльности"
+
+msgid "Activate program loyalty"
+msgstr "Активировать программу лояльности"
+
+msgid "Enable this setting for activate program loyalty on site"
+msgstr "Активируйте эту настройку для активации программы лояльности на сайте"

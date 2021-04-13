@@ -416,6 +416,24 @@ abstract class WC_Retailcrm_Abstracts_Settings extends WC_Integration
                 );
 
                 /**
+                 * Program loyalty settings
+                 */
+                $this->form_fields[] = array(
+                    'title'       => __('Program loyalty', 'retailcrm'),
+                    'type'        => 'heading',
+                    'description' => '',
+                    'id'          => 'loyalty_options'
+                );
+
+                $this->form_fields['loyalty'] = array(
+                    'label'       => __('Activate program loyalty', 'retailcrm'),
+                    'title'       => __('Program loyalty', 'retailcrm'),
+                    'class'       => 'checkbox',
+                    'type'        => 'checkbox',
+                    'description' => __('Enable this setting for activate program loyalty on site', 'retailcrm')
+                );
+
+                /**
                  * Uploads options
                  */
                 $options = array_filter(get_option(static::$option_key));
